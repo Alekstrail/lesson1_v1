@@ -13,18 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
-const settings_1 = require("../src/settings");
+const src_1 = require("../src");
 describe('/videos', () => {
     let newVideo = null;
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(settings_1.app).delete('/testing/all-data').expect(204);
+        yield (0, supertest_1.default)(src_1.app).delete('/testing/all-data').expect(204);
     }));
     it('GET products = []', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(settings_1.app).get('/videos/').expect([]);
+        yield (0, supertest_1.default)(src_1.app).get('/videos/').expect([]);
     }));
     it('- POST does not create the video with incorrect data (no title, no author)', function () {
         return __awaiter(this, void 0, void 0, function* () {
-            yield (0, supertest_1.default)(settings_1.app)
+            yield (0, supertest_1.default)(src_1.app)
                 .post('/videos/')
                 .send({ title: '', author: '' })
                 .expect(CodeResponsesEnum.Incorrect_values_400, {
@@ -33,28 +33,28 @@ describe('/videos', () => {
                     { message: 'author is required', field: 'author' },
                 ],
             });
-            const res = yield (0, supertest_1.default)(settings_1.app).get('/videos/');
+            const res = yield (0, supertest_1.default)(src_1.app).get('/videos/');
             expect(res.body).toEqual([]);
         });
     });
     it('- GET product by ID with incorrect id', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(settings_1.app).get('/videos/helloWorld').expect(400);
+        yield (0, supertest_1.default)(src_1.app).get('/videos/helloWorld').expect(400);
     }));
     it('+ GET product by ID with correct id', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(settings_1.app)
+        yield (0, supertest_1.default)(src_1.app)
             .get('/videos/' + newVideo.id)
             .expect(200, newVideo);
     }));
     it('- PUT product by ID with incorrect data', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(settings_1.app)
+        yield (0, supertest_1.default)(src_1.app)
             .put('/videos/' + 1223)
             .send({ title: 'title', author: 'title' })
             .expect(CodeResponsesEnum.Not_found_404);
-        const res = yield (0, supertest_1.default)(settings_1.app).get('/videos/');
+        const res = yield (0, supertest_1.default)(src_1.app).get('/videos/');
         expect(res.body[0]).toEqual(newVideo);
     }));
     it('+ PUT product by ID with correct data', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(settings_1.app)
+        yield (0, supertest_1.default)(src_1.app)
             .put('/videos/' + newVideo.id)
             .send({
             title: 'hello title',
@@ -62,23 +62,23 @@ describe('/videos', () => {
             publicationDate: '2023-01-12T08:12:39.261Z',
         })
             .expect(CodeResponsesEnum.Not_content_204);
-        const res = yield (0, supertest_1.default)(settings_1.app).get('/videos/');
+        const res = yield (0, supertest_1.default)(src_1.app).get('/videos/');
         expect(res.body[0]).toEqual(Object.assign(Object.assign({}, newVideo), { title: 'hello title', author: 'hello author', publicationDate: '2023-01-12T08:12:39.261Z' }));
         newVideo = res.body[0];
     }));
     it('- DELETE product by incorrect ID', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(settings_1.app)
+        yield (0, supertest_1.default)(src_1.app)
             .delete('/videos/876328')
             .expect(CodeResponsesEnum.Not_found_404);
-        const res = yield (0, supertest_1.default)(settings_1.app).get('/videos/');
+        const res = yield (0, supertest_1.default)(src_1.app).get('/videos/');
         expect(res.body[0]).toEqual(newVideo);
     }));
     it('+ DELETE product by correct ID, auth', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(settings_1.app)
+        yield (0, supertest_1.default)(src_1.app)
             .delete('/videos/' + newVideo.id)
             .set('authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(CodeResponsesEnum.Not_content_204);
-        const res = yield (0, supertest_1.default)(settings_1.app).get('/videos/');
+        const res = yield (0, supertest_1.default)(src_1.app).get('/videos/');
         expect(res.body.length).toBe(0);
     }));
 });

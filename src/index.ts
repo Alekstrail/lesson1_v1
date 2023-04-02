@@ -44,9 +44,6 @@ const videos: VideosType[] = [
     }
 ]
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello Alex!')
-})
 
 app.get('/videos', (req: Request, res: Response) => {
     res.send(videos)

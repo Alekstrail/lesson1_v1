@@ -29,9 +29,6 @@ const videos = [
         ]
     }
 ];
-app.get('/', (req, res) => {
-    res.send('Hello Alex!');
-});
 app.get('/videos', (req, res) => {
     res.send(videos);
 });
