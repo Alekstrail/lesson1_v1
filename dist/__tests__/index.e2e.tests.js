@@ -27,7 +27,7 @@ describe('/videos', () => {
             yield (0, supertest_1.default)(src_1.app)
                 .post('/videos/')
                 .send({ title: '', author: '' })
-                .expect(CodeResponsesEnum.Incorrect_values_400, {
+                .expect(400, {
                 errorsMessages: [
                     { message: 'title is required', field: 'title' },
                     { message: 'author is required', field: 'author' },
@@ -49,7 +49,7 @@ describe('/videos', () => {
         yield (0, supertest_1.default)(src_1.app)
             .put('/videos/' + 1223)
             .send({ title: 'title', author: 'title' })
-            .expect(CodeResponsesEnum.Not_found_404);
+            .expect(400);
         const res = yield (0, supertest_1.default)(src_1.app).get('/videos/');
         expect(res.body[0]).toEqual(newVideo);
     }));
@@ -61,7 +61,7 @@ describe('/videos', () => {
             author: 'hello author',
             publicationDate: '2023-01-12T08:12:39.261Z',
         })
-            .expect(CodeResponsesEnum.Not_content_204);
+            .expect(204);
         const res = yield (0, supertest_1.default)(src_1.app).get('/videos/');
         expect(res.body[0]).toEqual(Object.assign(Object.assign({}, newVideo), { title: 'hello title', author: 'hello author', publicationDate: '2023-01-12T08:12:39.261Z' }));
         newVideo = res.body[0];
@@ -69,7 +69,7 @@ describe('/videos', () => {
     it('- DELETE product by incorrect ID', () => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, supertest_1.default)(src_1.app)
             .delete('/videos/876328')
-            .expect(CodeResponsesEnum.Not_found_404);
+            .expect(404);
         const res = yield (0, supertest_1.default)(src_1.app).get('/videos/');
         expect(res.body[0]).toEqual(newVideo);
     }));
@@ -77,7 +77,7 @@ describe('/videos', () => {
         yield (0, supertest_1.default)(src_1.app)
             .delete('/videos/' + newVideo.id)
             .set('authorization', 'Basic YWRtaW46cXdlcnR5')
-            .expect(CodeResponsesEnum.Not_content_204);
+            .expect(204);
         const res = yield (0, supertest_1.default)(src_1.app).get('/videos/');
         expect(res.body.length).toBe(0);
     }));

@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { app } from '../src'
+import {app, VideosType} from '../src'
 
 
 
@@ -18,7 +18,7 @@ describe('/videos', () => {
         await request(app)
             .post('/videos/')
             .send({ title: '', author: '' })
-            .expect(CodeResponsesEnum.Incorrect_values_400, {
+            .expect(400, {
                 errorsMessages: [
                     { message: 'title is required', field: 'title' },
                     { message: 'author is required', field: 'author' },
@@ -42,7 +42,7 @@ describe('/videos', () => {
         await request(app)
             .put('/videos/' + 1223)
             .send({ title: 'title', author: 'title' })
-            .expect(CodeResponsesEnum.Not_found_404)
+            .expect(400)
 
         const res = await request(app).get('/videos/')
         expect(res.body[0]).toEqual(newVideo)
@@ -56,7 +56,7 @@ describe('/videos', () => {
                 author: 'hello author',
                 publicationDate: '2023-01-12T08:12:39.261Z',
             })
-            .expect(CodeResponsesEnum.Not_content_204)
+            .expect(204)
 
         const res = await request(app).get('/videos/')
         expect(res.body[0]).toEqual({
@@ -71,7 +71,7 @@ describe('/videos', () => {
     it('- DELETE product by incorrect ID', async () => {
         await request(app)
             .delete('/videos/876328')
-            .expect(CodeResponsesEnum.Not_found_404)
+            .expect(404)
 
         const res = await request(app).get('/videos/')
         expect(res.body[0]).toEqual(newVideo)
@@ -80,7 +80,7 @@ describe('/videos', () => {
         await request(app)
             .delete('/videos/' + newVideo!.id)
             .set('authorization', 'Basic YWRtaW46cXdlcnR5')
-            .expect(CodeResponsesEnum.Not_content_204)
+            .expect(204)
 
         const res = await request(app).get('/videos/')
         expect(res.body.length).toBe(0)
